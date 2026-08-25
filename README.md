@@ -117,7 +117,7 @@ Industry research and Snowflake customer outcomes:
 - **Malaysia produced 594,000 bbl/d of crude oil and 83.5 Bcm of natural gas in 2023** — [EIA](https://www.eia.gov/international/analysis/country/MYS)
 - **PETRONAS reported RM 282.7B revenue in 2023 with upstream as the largest contributor** — [PETRONAS Annual Report](https://www.petronas.com/media/reports)
 - **AI-enabled reservoir management can increase recovery by 5-8% per field** — [McKinsey Energy](https://www.mckinsey.com/industries/oil-and-gas/our-insights)
-- **Snowflake enables real-time data sharing across energy joint ventures** — [Snowflake Energy](https://www.snowflake.com/en/data-cloud/energy/)
+- **Shell** (Snowflake customer): built a unified upstream data platform on Snowflake for real-time drilling optimization across 1,000+ wells -- [snowflake.com/customers/shell](https://www.snowflake.com/en/customers/all-customers/case-study/shell/)
 
 
 ## Key Demo Numbers
