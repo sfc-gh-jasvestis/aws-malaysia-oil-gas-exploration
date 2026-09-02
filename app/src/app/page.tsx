@@ -32,15 +32,22 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
+
+  // KPI values come from /api/data, which reads CURATED.KPI_SUMMARY. The literal
+  // stays as a fallback so the card still renders if the API is unavailable.
+  const kpiVal = (title: string, fallback: string): string =>
+    (data?.kpiCards as { title: string; value: string }[] | undefined)
+      ?.find((k) => k.title === title)?.value ?? fallback;
+
   const title = narrative?.title || 'SEA AWS Demo';
 
   const executiveCockpit = (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KPICard title="Exploration Wells" value="12" status="neutral" />
-        <KPICard title="Success Rate" value="42%" status="neutral" />
-        <KPICard title="Resources Added" value="847 MMboe" status="neutral" />
-        <KPICard title="Seismic (km²)" value="14,200" status="neutral" />
+        <KPICard title="Exploration Wells" value={kpiVal('Exploration Wells', '12')} status="neutral" />
+        <KPICard title="Success Rate" value={kpiVal('Success Rate', '42%')} status="neutral" />
+        <KPICard title="Resources Added" value={kpiVal('Resources Added', '847 MMboe')} status="neutral" />
+        <KPICard title="Seismic (km²)" value={kpiVal('Seismic (km²)', '14,200')} status="neutral" />
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="lg:col-span-1">
@@ -87,9 +94,9 @@ export default function HomePage() {
   const domainTab1 = (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KPICard title="AI Prospect Score" value="72%" />
-        <KPICard title="Seismic Coverage" value="94%" />
-        <KPICard title="Drilling Cost/Well" value="RM 84M" />
+        <KPICard title="AI Prospect Score" value={kpiVal('AI Prospect Score', '72%')} />
+        <KPICard title="Seismic Coverage" value={kpiVal('Seismic Coverage', '94%')} />
+        <KPICard title="Drilling Cost/Well" value={kpiVal('Drilling Cost/Well', 'RM 84M')} />
       </div>
       <Chart
         data={data?.detail || [{ x: 'Mon', y: 24 }, { x: 'Tue', y: 28 }, { x: 'Wed', y: 22 }, { x: 'Thu', y: 31 }, { x: 'Fri', y: 26 }, { x: 'Sat', y: 19 }, { x: 'Sun', y: 23 }]}
