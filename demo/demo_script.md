@@ -1,109 +1,83 @@
-# Demo Script: Upstream Exploration Analytics
-## ~4-Minute Recorded Walkthrough
-**Format**: Screen recording with voiceover
-**Target**: Customer meeting / booth loop / social share
-**Narrative**: "Snowflake unifies seismic, well, and production data across 8 offshore blocks — ML.FORECAST models decline curves, Cortex Search surfaces subsurface reports, and Iceberg sharing gives JV partners governed access without data copies"
-**Demo Mode**: Open app with `?demo=true` for presenter notes
+# Upstream Exploration Analytics
 
----
+**Malaysia - Oil & Gas — Upstream Exploration**
+Use case: Exploration Analytics
 
-## Two Personas
+> Data-driven exploration for Malaysia's offshore basins — ML.FORECAST projects production curves, Iceberg enables JV partner access, and Cortex Agent answers subsurface questions.
 
-| Persona | Role | Tool | What they care about |
-|---|---|---|---|
-| **Dr. Kamal bin Mohamad** | VP Exploration | React App (SPCS) | Portfolio economics, prospect ranking, reserves replacement ratio, JV partner reporting |
-| **Sarah Tan Wei Ling** | Geologist | Amazon QuickSight | Seismic interpretation, well correlation, reservoir characterisation, subsurface risk |
+## Why Snowflake
 
----
+Snowflake unifies seismic, well, and production data across 8 offshore blocks — ML.FORECAST models decline curves, Cortex Search surfaces subsurface reports, and Iceberg sharing gives JV partners governed access without data copies
 
-## What's Built
+- **ML.FORECAST on production decline curves** - Only demo using ML.FORECAST for oil well decline projection — not demand or yield
+- **Iceberg for JV partner access** - Only demo showing governed data sharing with joint venture partners via open table format
+- **Cortex Search on subsurface documents** - Only demo indexing geological and well proposal documents for exploration intelligence
+- **Malaysian upstream O&G context** - Petronas PSC framework, Malay/Sarawak Basin terminology, MYR economics
+- **Prospect ranking with NPV** - Combines reserves, production, and cost data to rank exploration prospects economically
+- **AWS SageMaker geophysical + Iceberg** - Only demo combining geophysical ML with Iceberg open table export for partners
 
-| Layer | Component | Detail |
+## What is deployed
+
+| | |
+|---|---|
+| Database | `MY_OIL_GAS_EXPLORATION` |
+| Service | `MY_OIL_GAS_EXPLORATION_APP` |
+| Compute pool | `SEA_DEMOS_MALAYSIA_POOL` |
+| Dimension table | `RAW.MALAYSIA_OG_MACRO` (20 rows) |
+| Fact table | `RAW.PRODUCTION_LOGS` (250,000 rows, 90 days) |
+| Curated layer | `CURATED.PERFORMANCE_SUMMARY`, `CURATED.TREND_ANALYSIS`, `CURATED.KPI_SUMMARY` |
+| Currency | MYR (RM) |
+
+Regions in play: Selangor, Johor, Penang, Sabah, Sarawak
+Segments: Deepwater, Shallow Water, Onshore, Marginal Field
+
+Dynamic tables are created suspended and refreshed on demand:
+
+```bash
+./refresh_demo_data.sh MY_OIL_GAS_EXPLORATION
+```
+
+## KPI cards
+
+Every card below is served live from `CURATED.KPI_SUMMARY`. The app keeps the
+original literal as a fallback, so it still renders if Snowflake is unreachable.
+
+| Card | Value | Backed by |
 |---|---|---|
-| **RAW** | 6 tables | WELLS (200), SEISMIC_SURVEYS (50), PRODUCTION_LOGS (100000), RESERVES (500), EXPLORATION_DOCS (120), MALAYSIA_OG_MACRO (10) |
-| **CURATED** | 4 Dynamic Tables | WELL_PERFORMANCE_SUMMARY, PRODUCTION_TIMESERIES, BLOCK_ECONOMICS, RESERVES_MOVEMENT |
-| **ML** | ML.FORECAST | Forecasting + anomaly detection |
-| **AI** | SUMMARIZE, AI_CLASSIFY | Classification + extraction |
-| **Search** | Cortex Search | 120 documents indexed |
-| **Agent** | EXPLORATION_INTELLIGENCE_AGENT | Semantic View + Search tools |
+| Exploration Wells | `12` | average per event |
+| Success Rate | `42%` | average per event |
+| Resources Added | `847 MMboe` | average per event |
+| Seismic (km²) | `14,200` | total across Malaysia Og Macro |
+| AI Prospect Score | `72%` | average per event |
+| Seismic Coverage | `94%` | average per event |
+| Drilling Cost/Well | `RM 84M` | average per event |
 
 
----
+## Demo flow
 
-## The Story
+1. Portfolio Overview
+2. Production Analytics
+3. Subsurface Intelligence
+4. Ask AI
+5. Architecture & Data
 
-Malaysia's offshore basins produce 600,000 barrels per day across hundreds of wells operated under Production Sharing Contracts with PETRONAS. A VP Exploration needs to rank prospects, forecast decline curves, and share data with JV partners — but subsurface intelligence is trapped in PDFs, production data sits in siloed systems, and partner reporting requires manual extracts.
+## Talking points
 
----
+- **200 wells** - across 8 offshore blocks in Malay and Sarawak Basins
+- **RM 4.2B** - annual production revenue
+- **3 prospects** - above economic threshold (NPV > RM 800M)
+- **120 subsurface docs** - indexed and searchable via Cortex Search
+- **100K production logs** - daily readings across all active wells
+- **18% decline rate** - accelerated decline in Block PM-3 wells
+- **4 wells** - flagged for workover due to high water cut
 
-## Script
+## Business impact
 
-### [0:00–0:45] PORTFOLIO OVERVIEW
-
-**Show**: Portfolio Overview tab
-
-> "Two hundred wells across 8 Production Sharing Contract blocks in the Malay and Sarawak Basins."
-
-**Action**: Point at the RM 4.2B revenue KPI card
-
-### [0:45–1:30] PRODUCTION ANALYTICS
-
-**Show**: Production Analytics tab
-
-> "Well MY-047 in Block PM-3 showing 18% annual decline — faster than type curve prediction."
-
-**Action**: Click Well MY-047 in the well list
-
-### [1:30–2:15] SUBSURFACE INTELLIGENCE
-
-**Show**: Subsurface Intelligence tab
-
-> "One hundred and twenty subsurface documents — well proposals, seismic interpretations, geological assessments."
-
-**Action**: Search for 'Prospect Alpha reservoir quality'
-
-### [2:15–3:00] ASK AI
-
-**Show**: Ask AI tab
-
-> "Dr. Kamal asks: 'Which prospects exceed our economic threshold?'"
-
-**Action**: Type: 'Which prospects exceed our economic threshold?'
-
-### [3:00–3:45] ARCHITECTURE & DATA
-
-**Show**: Architecture & Data tab
-
-> "Six Snowflake capabilities, six AWS services."
-
-**Action**: Walk through architecture diagram
-
+- Malaysia produced 594,000 bbl/d of crude oil and 83.5 Bcm of natural gas in 2023 (EIA)
+- PETRONAS reported RM 282.7B revenue in 2023 with upstream as the largest contributor (PETRONAS Annual Report)
+- AI-enabled reservoir management can increase recovery by 5-8% per field (McKinsey Energy)
+- Snowflake enables real-time data sharing across energy joint ventures (Snowflake Energy)
 
 ---
-
-## Key Demo Differentiators
-
-1. **ML.FORECAST on production decline curves** — Only demo using ML.FORECAST for oil well decline projection — not demand or yield
-2. **Iceberg for JV partner access** — Only demo showing governed data sharing with joint venture partners via open table format
-3. **Cortex Search on subsurface documents** — Only demo indexing geological and well proposal documents for exploration intelligence
-4. **Malaysian upstream O&G context** — Petronas PSC framework, Malay/Sarawak Basin terminology, MYR economics
-5. **Prospect ranking with NPV** — Combines reserves, production, and cost data to rank exploration prospects economically
-6. **AWS SageMaker geophysical + Iceberg** — Only demo combining geophysical ML with Iceberg open table export for partners
-
-
----
-
-## Demo Prep Checklist
-
-### Data Verification
-- [ ] `SELECT COUNT(*) FROM OIL_GAS_EXPLORATION.RAW.WELLS` → 200
-- [ ] `SELECT COUNT(*) FROM OIL_GAS_EXPLORATION.RAW.PRODUCTION_LOGS` → 100000
-- [ ] `SELECT COUNT(DISTINCT BLOCK_ID) FROM OIL_GAS_EXPLORATION.CURATED.BLOCK_ECONOMICS` → 8
-
-### ML Model Verification
-- [ ] `SELECT COUNT(*) FROM OIL_GAS_EXPLORATION.ML.PRODUCTION_DECLINE_RESULTS` → >0
-- [ ] `SELECT COUNT(*) FROM OIL_GAS_EXPLORATION.ML.PRODUCTION_DECLINE_RESULTS WHERE FORECAST_DECLINE_RATE > 0.15` → >=3
-
-### AI/Agent Verification
-- [ ] `SELECT COUNT(*) FROM OIL_GAS_EXPLORATION.AI.DOC_CLASSIFICATION WHERE MATURITY = 'DEVELOPMENT_READY'` → >=3
-
+Generated from `generator/demo_specs/aws-malaysia-oil-gas-exploration.json`. Do not hand-edit: run
+`python3 generator/gen_repo_docs.py aws-malaysia-oil-gas-exploration` instead.
