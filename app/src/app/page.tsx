@@ -53,6 +53,7 @@ export default function HomePage() {
         <div className="lg:col-span-1">
           <GeoMap
             country="malaysia"
+            labels={{ entity: 'Prospects', event: 'Production Logs', alert: 'Downtime Events' }}
             regions={data?.regions}
             markers={[{"label": "Kuala Lumpur", "value": "PETRONAS Tower HQ", "color": "blue", "size": "lg"}, {"label": "Johor Bahru", "value": "Refinery: 242K bpd", "color": "green", "size": "lg"}, {"label": "Kota Kinabalu", "value": "Deepwater ops", "color": "green", "size": "md"}, {"label": "Kuching", "value": "Sarawak gas", "color": "green", "size": "md"}]}
             routes={[]}
@@ -83,8 +84,13 @@ export default function HomePage() {
         columns={[
           { key: 'id', header: '#' },
           { key: 'name', header: 'Prospect' },
+          { key: 'region', header: 'Region' },
           { key: 'status', header: 'Risk' },
-          { key: 'value', header: 'Est. Resource (MMboe)' },
+          { key: 'm1', header: 'Est. Resource (MMboe)' },
+          { key: 'm2', header: 'Success Rate' },
+          { key: 'm3', header: 'Resources Added' },
+          { key: 'events', header: 'Production Logs' },
+          { key: 'alerts', header: 'Downtime Events' },
         ]}
         data={data?.entities || []}
         title="Prospect Portfolio"
