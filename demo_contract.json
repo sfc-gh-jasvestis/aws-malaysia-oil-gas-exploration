@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "repo": "aws-malaysia-oil-gas-exploration",
+  "operation": "on-demand",
+  "data_classification": "synthetic demonstration only",
+  "currency": "USD",
+  "grains": {
+    "RAW.RIGS": "one row per drilling rig or unit",
+    "RAW.RIG_DAILY": "one row per rig per day (90 days)",
+    "RAW.WELL_PROGRESS": "one row per rig (current-well depth snapshot)",
+    "CURATED.PERFORMANCE_SUMMARY": "one row per rig",
+    "CURATED.TREND_ANALYSIS": "one row per day",
+    "CURATED.NPT_CAUSES": "one row per root cause",
+    "CURATED.KPI_SUMMARY": "one row per KPI",
+    "ML.NPT_RISK_SCORES": "one row per rig (latest day)"
+  },
+  "metrics": {
+    "Mud Checks Within Spec": "100 * SUM(CHECKS_IN_SPEC) / SUM(MUD_CHECKS) (internal demo specification)",
+    "NPT Events": "SUM(NPT_EVENTS)",
+    "Diesel Intensity": "1000 * SUM(FUEL_M3) / SUM(METRES_DRILLED) (litres per metre drilled)",
+    "Diesel Used (m3)": "SUM(FUEL_M3)",
+    "Productive Time": "100 * SUM(PRODUCTIVE_HOURS) / SUM(PLANNED_HOURS)",
+    "Rigs Monitored": "COUNT(RAW.RIGS)",
+    "Current-Well Depth Progress": "100 * SUM(LEAST(DRILLED_DEPTH_M, PLANNED_DEPTH_M)) / SUM(PLANNED_DEPTH_M)",
+    "Well-Control Kicks": "SUM(KICKS)"
+  },
+  "chart_bindings": {
+    "daily_mud_checks_within_spec": [
+      "CURATED.TREND_ANALYSIS.METRIC_DATE",
+      "IN_SPEC_PCT"
+    ],
+    "npt_hours_by_cause": [
+      "CURATED.NPT_CAUSES.ROOT_CAUSE",
+      "NPT_HOURS"
+    ],
+    "bop_test_vs_mud_in_spec": [
+      "CURATED.PERFORMANCE_SUMMARY.BOP_TEST_COMPLETION_PCT",
+      "IN_SPEC_PCT"
+    ],
+    "quicksight_npt_risk": [
+      "ENTITY_ID",
+      "MAX(NPT_PROB_7D)"
+    ]
+  },
+  "freshness": "MAX(EVENT_DATE) is an observation watermark; requestedAt is not freshness",
+  "required_capabilities": {
+    "core_pipeline": "Curated KPIs reconcile to a RAW recomputation (run_core.py checks this on every build)",
+    "npt_risk_model": "Snowflake ML CLASSIFICATION of P(NPT event in next 7 days) per rig, evaluated on an out-of-time holdout",
+    "forecast_and_anomaly": "14-day fleet-wide diesel-use FORECAST; standpipe-pressure ANOMALY_DETECTION (train 75 days, detect last 15)",
+    "search": "Cortex Search SEARCH.WELL_SOP_SEARCH over synthetic NPT-response SOPs (one per rig type and cause)",
+    "semantic_analytics": "Semantic view APP.DRILLING_ANALYTICS and Cortex Agent APP.DRILLING_AGENT using analyst + search tools",
+    "grounded_ai": "Agent answers return generated SQL and SOP citations; the action memo uses only KPI, NPT, cause and risk rows",
+    "quicksight": "DIRECT_QUERY dashboard (rigs with observations, daily mud checks within spec, NPT events by rig, NPT risk, IoT message count) through a read-only Snowflake service user",
+    "quicksight_q": "Amazon Q topic over the curated datasets for natural-language questions",
+    "aws_ingestion": "IoT Core rule -> S3 -> Snowpipe AUTO_INGEST into RAW.LIVE_TELEMETRY",
+    "notifications": "APP.LIVE_ALARM_ALERT logs new ALARM readings to APP.ALERT_LOG and emails via SYSTEM$SEND_EMAIL; alert and tasks suspended between demos",
+    "orchestration": "Task graph APP.TASK_REFRESH_CURATED -> APP.TASK_RESCORE_RISK run on demand (EXECUTE TASK)",
+    "app_deployment": "SPCS service APP.MY_OIL_GAS_EXPLORATION_APP; routes /api/data, /api/ask, /api/agent"
+  },
+  "builds": {
+    "snowflake": {
+      "database": "MALAYSIA_OIL_GAS_EXPLORATION_SNOWFLAKE",
+      "app_setting": "DEMO_PLATFORM=snowflake",
+      "live_telemetry": "APP.SIMULATE_TELEMETRY(n)",
+      "memo": "Cortex AI_COMPLETE (claude-sonnet-4-5)"
+    },
+    "aws": {
+      "database": "MALAYSIA_OIL_GAS_EXPLORATION_AWS",
+      "app_setting": "DEMO_PLATFORM=aws",
+      "live_telemetry": "AWS IoT Core -> S3 -> Snowpipe",
+      "memo": "Amazon Bedrock Claude Sonnet 4.5 via APP.BEDROCK_GENERATE",
+      "capabilities": "see required_capabilities"
+    }
+  }
+}
